@@ -1,0 +1,167 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VietpieceHub/SCRIPT/Main/Loader.lua"))()
+local Window = Library.CreateLib("VietpieceHub", "DarkTheme")
+local Section = Window:NewSection("VietpieceHub")
+
+local character = game.Players.LocalPlayer.Character
+if character then
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.WalkSpeed = speed
+    end
+end)
+
+Section:NewButton("Set WalkSpeed to 50", function()
+    setWalkSpeed(50)
+end)
+
+local autoWalkSpeed = true
+Section:NewToggle("Auto WalkSpeed", function(state)
+    autoWalkSpeed = state
+end)
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    if autoWalkSpeed then
+        setWalkSpeed(50)
+    end
+end)
+
+
+local autoSkill = true
+Section:NewToggle("Auto Skill", function(state)
+    autoSkill = state
+end)
+
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if autoSkill then
+        if input.KeyCode == Enum.KeyCode.Z then
+            -- Perform action for skill Z
+            print("Using skill Z")
+        elseif input.KeyCode == Enum.KeyCode.X then
+            -- Perform action for skill X
+            print("Using skill X")
+        elseif input.KeyCode == Enum.KeyCode.C then
+            -- Perform action for skill C
+            print("Using skill C")
+        elseif input.KeyCode == Enum.KeyCode.V then
+            -- Perform action for skill V
+            print("Using skill V")
+        end
+    end
+end)
+
+local autoSword = true
+Section:NewToggle("Auto Sword", function(state)
+    autoSword = state
+end)
+
+local Sword = "CID"
+local character = game.Players.LocalPlayer.Character
+local backpack = game.Players.LocalPlayer.Backpack
+
+local sword = backpack and backpack:FindFirstChild(Sword) or character and character:FindFirstChild(Sword)
+if sword then
+    print("Using sword")
+    
+local autoMelee = true
+Section:NewToggle("Auto Melee", function(state)
+    autoMelee = state
+end)
+
+local Melee = "Gojo" 
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    if autoMelee then
+         if game.Players.LocalPlayer.Backpack:FindFirstChild(Melee) or game.Players.LocalPlayer.Character:FindFirstChild(Melee) then
+             print("Using melee weapon")
+        end
+    end
+end)
+
+local autoFruit = true
+Section:NewToggle("Auto Fruit", function(state)
+    autoFruit = state
+end)
+
+local Fruit = "Angel" 
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    if autoFruit then
+        if game.Players.LocalPlayer.Backpack:FindFirstChild(Fruit) or game.Players.LocalPlayer.Character:FindFirstChild(Fruit) then
+            print("Using fruit")
+        end
+    end
+end)
+local teleportEnabled = true
+Section:NewToggle("Teleport to Location", function(state)
+    teleportEnabled = state
+end)
+
+local teleportLocations = {
+    ["Spawn"] = Vector3.new(0, 100, 0),
+    ["Shop"] = Vector3.new(50, 100, 50),
+    -- Add more locations as needed
+}
+
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if teleportEnabled then
+        for locationName, position in pairs(teleportLocations) do
+            if input.KeyCode == Enum.KeyCode[locationName] then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(position)
+                print("Teleported to " .. locationName)
+                break
+            end
+        end
+    end
+end)
+local autoFarmBossEnabled = true
+local autoFarmBossToggle = Section:NewToggle("Auto Farm Boss", function(state)
+    autoFarmBossEnabled = state
+end)
+
+-- Function to attack boss
+local function attackBoss()
+    local boss = game.Workspace:FindFirstChild("Boss")  -- Replace "Boss" with actual boss model name
+    if boss then
+        local tool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+        if tool then
+            tool:Activate()  -- Use the tool to attack
+        end
+    end
+end
+
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    if autoFarmBossEnabled then
+        local boss = game.Workspace:FindFirstChild("Boss")
+        if boss then
+            attackBoss()
+        end
+    end
+end)
+local function handleInput(input)
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        local humanoidRootPart = character and character.HumanoidRootPart
+
+         if input.KeyCode == Enum.KeyCode.P then
+            -- Example: Toggle Auto WalkSpeed
+            autoWalkSpeed = not autoWalkSpeed
+            print("Toggled Auto WalkSpeed to " .. tostring(autoWalkSpeed))
+        elseif input.KeyCode == Enum.KeyCode.O then
+            -- Example: Toggle Auto Skill
+            autoSkill = not autoSkill
+            print("Toggled Auto Skill to " .. tostring(autoSkill))
+        elseif input.KeyCode == Enum.KeyCode.I then
+            -- Example: Teleport to Spawn
+            if teleportEnabled and teleportLocations["Spawn"] then
+                humanoidRootPart.CFrame = CFrame.new(teleportLocations["Spawn"])
+                print("Teleported to Spawn")
+            end
+        elseif input.KeyCode == Enum.KeyCode.U then
+            autoFarmBossEnabled = not autoFarmBossEnabled
+            print("Toggled Auto Farm Boss to " .. tostring(autoFarmBossEnabled))
+        end
+    end
+end)
+game:GetService("UserInputService").InputBegan:Connect(handleInput)
